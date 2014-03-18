@@ -1,0 +1,34 @@
+Net-WDNS version 0.01
+=====================
+
+Net::WNDS is a perl binding to libwdns, and adjunct library
+used with libnmsg.
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+
+DEPENDENCIES
+
+This module requires the presense of libwdns.
+
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2010 by Carnegie Mellon University
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License, as published by
+the Free Software Foundation, under the terms pursuant to Version 2,
+June 1991.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+Public License for more details.
