@@ -16,6 +16,10 @@ use strict;
 use warnings;
 
 use Net::WDNS qw(:func);
+
+# need to use these to set up their namespaces (WDNS.xs blesses
+# references into them regardless of whether they've been loaded)
+use Net::WDNS::Msg;
 use Net::WDNS::Question;
 use Net::WDNS::RR;
 use Net::WDNS::RD;
@@ -34,8 +38,8 @@ use constant ADDITIONAL => 8;
 
 sub new {
   my($class, $pkt) = @_;
-  my $msg = parse_message($pkt);
-  bless [$msg, undef, undef, undef, undef, undef], $class;
+  my $msg = parse_message_raw($pkt);
+  bless [$msg], $class;
 }
 
 sub msg { shift->[MSG] }
@@ -66,12 +70,18 @@ sub flags {
 
 sub rcode_num {
   my $self = shift;
-  $self->[RCODE] ||= get_rcode($self->[MSG]);
+  if (! defined $self->[RCODE]) {
+    $self->[RCODE] = get_rcode($self->[MSG]);
+  }
+  $self->[RCODE];
 }
 
 sub opcode_num {
   my $self = shift;
-  $self->[RCODE] ||= get_opcode($self->[MSG]);
+  if (! defined $self->[OPCODE]) {
+    $self->[OPCODE] = get_opcode($self->[MSG]);
+  }
+  $self->[OPCODE];
 }
 
 sub rcode { rcode_to_str(shift->rcode_num) }

@@ -1,4 +1,4 @@
-use Test::More tests => 21;
+use Test::More tests => 22;
 
 use FindBin;
 my $dat_file = "$FindBin::Bin/query.dat";
@@ -7,13 +7,17 @@ open(FH, '<', $dat_file);
 sysread(FH, my $pkt, -s FH);
 close(FH);
 
+use Net::WDNS;
 use Net::WDNS::Msg;
 
-my $msg = new_ok("Net::WDNS::Msg", [$pkt]);
+my $msg = new_ok('Net::WDNS::Msg', [$pkt]);
 
-cmp_ok($msg->id,     "==",     18873,    "id");
-cmp_ok($msg->rcode,  "eq", "NOERROR",  "rcode");
-cmp_ok($msg->opcode, "eq",   "QUERY", "opcode");
+my $msg2 = Net::WDNS::parse_message($pkt);
+ok(UNIVERSAL::isa($msg2, 'Net::WDNS::Msg'), "parse_message()");
+
+cmp_ok($msg->id,     '==',     18873,     'id');
+cmp_ok($msg->rcode,  'eq', 'NOERROR',  'rcode');
+cmp_ok($msg->opcode, 'eq',   'QUERY', 'opcode');
 my $flags = $msg->flags;
 foreach my $flag (qw( tc cd ad aa )) {
   cmp_ok($flags->{$flag}, '==', 0, "$flag flag not set");
@@ -44,10 +48,10 @@ for my $rr (@$additional) {
   $additional_total += @rd;
 }
 
-cmp_ok($query_total,      "==",  1,      "1 query");
-cmp_ok($answer_total,     "==", 11,    "11 answer");
-cmp_ok($authority_total,  "==",  4,  "4 authority");
-cmp_ok($additional_total, "==",  4, "4 additional");
+cmp_ok($query_total,      '==',  1,      '1 query');
+cmp_ok($answer_total,     '==', 11,    '11 answer');
+cmp_ok($authority_total,  '==',  4,  '4 authority');
+cmp_ok($additional_total, '==',  4, '4 additional');
 
 my @query_strs = (
   "google.com. IN A",

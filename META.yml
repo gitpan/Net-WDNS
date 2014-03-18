@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Net-WDNS
-version:            0.01
+version:            0.02
 abstract:           Perl extension for the wdns low-level DNS utility library
 author:
     - Matt Sisk <sisk@cert.org>

@@ -391,7 +391,7 @@ wdns_clear_message(m)
     wdns_message_t *m
 
 wdns_message_t *
-parse_message(pkt)
+parse_message_raw(pkt)
     SV *pkt
     PREINIT:
     uint8_t        *p;

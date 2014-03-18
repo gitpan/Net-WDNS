@@ -30,7 +30,7 @@ use File::Spec;
 sub dl_load_flags { 0x01 } # global option
 
 BEGIN {
-  $VERSION = '0.01';
+  $VERSION = '0.02';
   bootstrap Net::WDNS $VERSION;
 }
 
@@ -58,6 +58,13 @@ sub wdns_have_library {
 
 ###
 
+sub parse_message {
+  @_ || croak("raw dns pkt required");
+  bless[parse_message_raw(shift)], 'Net::WDNS::Msg';
+}
+
+###
+
 my %Func;
 ++$Func{$_} foreach (qw(
   len_name
@@ -75,6 +82,8 @@ my %Func;
   str_to_name
   message_to_str
   parse_message
+
+  parse_message_raw
   clear_message
 
   get_id
