@@ -126,16 +126,16 @@ __END__
 
 =head1 NAME
 
-Net::WDNS::Msg - Perl interface for WDNS messages
+Net::WDNS::Msg - Perl interface for libwdns messages
 
 =head1 SYNOPSIS
 
-use Net::WDNS qw(:func);
+  use Net::WDNS qw(:func);
 
-... # get raw DNS packet
+  ... # get raw DNS packet
 
-my $msg = parse_message($pkt);
-print $msg->as_str, "\n";
+  my $msg = parse_message($pkt);
+  print $msg->as_str, "\n";
 
 =head1 DESCRIPTION
 

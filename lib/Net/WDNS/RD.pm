@@ -54,16 +54,16 @@ Net::WDNS::RD - Perl interface for libwdns rdata
 
 =head1 SYNOPSIS
 
-use Net::WDNS;
+  use Net::WDNS;
 
-...
+  ...
 
-my $msg = parse_message($pkt);
-for my $rr ($msg->answer) {
-  for my $rd ($rr->rdata) {
-    print $rd->as_str, "\n";
+  my $msg = parse_message($pkt);
+  for my $rr ($msg->answer) {
+    for my $rd ($rr->rdata) {
+      print $rd->as_str, "\n";
+    }
   }
-}
 
 =head1 DESCRIPTION
 

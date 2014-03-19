@@ -60,14 +60,14 @@ Net::WDNS::Question - Perl interface for libwdns question records
 
 =head1 SYNOPSIS
 
-use Net::WDNS;
+  use Net::WDNS;
 
-...
+  ...
 
-my $msg = parse_message($pkt);
-for my $q ($msg->question) {
-  print $q->as_str, "\n";
-}
+  my $msg = parse_message($pkt);
+  for my $q ($msg->question) {
+    print $q->as_str, "\n";
+  }
 
 =head1 DESCRIPTION
 

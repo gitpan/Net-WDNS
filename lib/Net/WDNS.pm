@@ -30,7 +30,7 @@ use File::Spec;
 sub dl_load_flags { 0x01 } # global option
 
 BEGIN {
-  $VERSION = '0.02';
+  $VERSION = '0.03';
   bootstrap Net::WDNS $VERSION;
 }
 
@@ -227,18 +227,18 @@ __END__
 
 =head1 NAME
 
-Net::WDNS - Perl extension for the wdns low-level DNS utility library
+Net::WDNS - Perl extension for the wdns low-level DNS library
 
 =head1 SYNOPSIS
 
-# The primary interface to libwdns is through Net::WDNS::Msg objects:
+  # The primary interface to libwdns is through Net::WDNS::Msg objects:
 
-use Net::Nmsg qw(:func);
+  use Net::Nmsg qw(:func);
 
-for my $pkt (@pkt_source) {
-  my $msg = parse_message($pkt); # same as Net::WDNS::Msg->new($pkt)
-  print $msg->as_str, "\n" if $msg->flags->{aa}; # or print "$msg\n"
-}
+  for my $pkt (@pkt_source) {
+    my $msg = parse_message($pkt); # same as Net::WDNS::Msg->new($pkt)
+    print $msg->as_str, "\n" if $msg->flags->{aa}; # or print "$msg\n"
+  }
 
 =head1 DESCRIPTION
 
