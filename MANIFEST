@@ -4,6 +4,8 @@ MANIFEST
 ppport.h
 typemap
 README
+GPL.txt
+LICENSE-OPENSOURCE.txt
 
 WDNS.xs
 
@@ -16,4 +18,5 @@ lib/Net/WDNS/RR.pm
 t/00_load.t
 t/20_msg.t
 t/query.dat
-META.yml                                 Module meta-data (added by MakeMaker)
+META.yml                                 Module YAML meta-data (added by MakeMaker)
+META.json                                Module JSON meta-data (added by MakeMaker)

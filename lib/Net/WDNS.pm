@@ -30,7 +30,7 @@ use File::Spec;
 sub dl_load_flags { 0x01 } # global option
 
 BEGIN {
-  $VERSION = '0.03';
+  $VERSION = '0.04';
   bootstrap Net::WDNS $VERSION;
 }
 
@@ -286,7 +286,7 @@ Convert a numeric rrclass to a descriptive string.
 Convert a numeric rrtype to a descriptive string. See also
 str_to_rrtype().
 
-=item rdata_to_str($raw_rdata)
+=item rdata_to_str($raw_rdata, $rrtype, $rrclass)
 
 Convert a raw rdata type to a human-readable string.
 

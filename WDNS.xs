@@ -178,14 +178,17 @@ size_t
 len_name(sv_name)
     SV  *sv_name
     PREINIT:
-    uint8_t  *name;
-    STRLEN    name_len;
-    wdns_res  res;
+    uint8_t    *name;
+    STRLEN      name_len;
+    wdns_res    res;
+    const char *rstr;
     CODE:
     name = (void *)SvPV(sv_name, name_len);
     res = wdns_len_uname(name, name + name_len, &RETVAL);
-    if (res != wdns_res_success)
-        croak("problem determining name length (err %d)", (int)res);
+    if (res != wdns_res_success) {
+        rstr = wdns_res_to_str(res);
+        croak("problem determining name length (err %d: %s)", (int)res, rstr);
+    }
     OUTPUT:
     RETVAL
 
@@ -193,17 +196,24 @@ void
 reverse_name(sv_name)
     SV  *sv_name
     PREINIT:
-    uint8_t  *name;
-    STRLEN    name_len;
-    size_t    sz;
-    wdns_res  res;
-    char      rev[WDNS_MAXLEN_NAME];
+    uint8_t    *name;
+    STRLEN      name_len;
+    size_t      sz;
+    wdns_res    res;
+    const char *rstr;
+    char        rev[WDNS_MAXLEN_NAME];
     PPCODE:
     name = (void *)SvPV(sv_name, name_len);
     res = wdns_len_uname(name, name + name_len, &sz);
-    if (res != wdns_res_success)
-        croak("problem determining name length (err %d)", (int)res);
-    wdns_reverse_name(name, sz, rev);
+    if (res != wdns_res_success) {
+        rstr = wdns_res_to_str(res);
+        croak("problem determining name length (err %d: %s)", (int)res, rstr);
+    }
+    res = wdns_reverse_name(name, sz, rev);
+    if (res != wdns_res_success) {
+        rstr = wdns_res_to_str(res);
+        croak("problem reversing name (err %d: %s)", (int)res, rstr);
+    }
     mXPUSHs(newSVpvn(rev, sz));
 
 void
@@ -215,15 +225,20 @@ left_chop(sv_name)
     wdns_name_t  name;
     size_t       sz;
     wdns_res     res;
+    const char  *rstr;
     PPCODE:
     name.data = (void *)SvPV(sv_name, name_len);
     name.len  = name_len;
     res = wdns_len_uname(name.data, name.data + name.len, &sz);
-    if (res != wdns_res_success)
-        croak("problem determining name length (err %d)", (int)res);
+    if (res != wdns_res_success) {
+        rstr = wdns_res_to_str(res);
+        croak("problem determining name length (err %d: %s)", (int)res, rstr);
+    }
     res = wdns_left_chop(&name, &chop);
-    if (res != wdns_res_success)
-        croak("problem chopping name (err %d)", (int)res);
+    if (res != wdns_res_success) {
+        rstr = wdns_res_to_str(res);
+        croak("problem chopping name (err %d: %s)", (int)res, rstr);
+    }
     mXPUSHs(newSVpvn(chop.data, chop.len));
 
 size_t
@@ -234,15 +249,20 @@ count_labels(sv_name)
     wdns_name_t  name;
     size_t       sz;
     wdns_res     res;
+    const char  *rstr;
     CODE:
     name.data = (void *)SvPV(sv_name, name_len);
     name.len  = name_len;
     res = wdns_len_uname(name.data, name.data + name.len, &sz);
-    if (res != wdns_res_success)
-        croak("problem determining name length (err %d)", (int)res);
+    if (res != wdns_res_success) {
+        rstr = wdns_res_to_str(res);
+        croak("problem determining name length (err %d: %s)", (int)res, rstr);
+    }
     res = wdns_count_labels(&name, &RETVAL);
-    if (res != wdns_res_success)
-        croak("problem counting name labels (err %d)", (int)res);
+    if (res != wdns_res_success) {
+        rstr = wdns_res_to_str(res);
+        croak("problem counting name labels (err %d: %s)", (int)res, rstr);
+    }
     OUTPUT:
     RETVAL
 
@@ -256,20 +276,28 @@ is_subdomain(sv_name0, sv_name1)
     STRLEN       name_len;
     size_t       sz;
     wdns_res     res;
+    const char  *rstr;
     CODE:
     name0.data = (void *)SvPV(sv_name0, name_len);
     name0.len  = name_len;
     name1.data = (void *)SvPV(sv_name1, name_len);
     name1.len  = name_len;
     res = wdns_len_uname(name0.data, name0.data + name0.len, &sz);
-    if (res != wdns_res_success)
-        croak("problem determining name length (err %d)", (int)res);
+    if (res != wdns_res_success) {
+        rstr = wdns_res_to_str(res);
+        croak("problem determining name length (err %d: %s)", (int)res, rstr);
+    }
     res = wdns_len_uname(name1.data, name1.data + name1.len, &sz);
-    if (res != wdns_res_success)
-        croak("problem determining name length (err %d)", (int)res);
+    if (res != wdns_res_success) {
+        rstr = wdns_res_to_str(res);
+        croak("problem determining name length (err %d: %s)", (int)res, rstr);
+    }
     res = wdns_is_subdomain(&name0, &name1, &RETVAL);
-    if (res != wdns_res_success)
-        croak("problem determining if name is subdomain (err %d)", (int)res);
+    if (res != wdns_res_success) {
+        rstr = wdns_res_to_str(res);
+        croak("problem determining if name is subdomain (err %d: %s)",
+              (int)res, rstr);
+    }
     OUTPUT:
     RETVAL
 
@@ -313,7 +341,7 @@ wdns_rrset_array_to_str(a, sec)
     PPCODE:
     str = wdns_rrset_array_to_str(a, sec);
     mXPUSHs(newSVpv(str, 0));
-    free(str);
+    Safefree(str);
 
 void
 wdns_rrset_to_str(rrset, sec)
@@ -324,7 +352,7 @@ wdns_rrset_to_str(rrset, sec)
     PPCODE:
     str = wdns_rrset_to_str(rrset, sec);
     mXPUSHs(newSVpv(str, 0));
-    free(str);
+    Safefree(str);
 
 void
 wdns_rr_to_str(rr, sec)
@@ -335,10 +363,10 @@ wdns_rr_to_str(rr, sec)
     PPCODE:
     str = wdns_rr_to_str(rr, sec);
     mXPUSHs(newSVpv(str, 0));
-    free(str);
+    Safefree(str);
 
 void
-wdns_rdata_to_str(sv_rdata, rrtype, rrclass)
+rdata_to_str(sv_rdata, rrtype, rrclass)
     SV       *sv_rdata
     uint16_t  rrtype
     uint16_t  rrclass
@@ -350,7 +378,7 @@ wdns_rdata_to_str(sv_rdata, rrtype, rrclass)
     src_str = SvPV(sv_rdata, rdlen);
     tgt_str = wdns_rdata_to_str(src_str, (uint16_t)rdlen, rrtype, rrclass);
     mXPUSHs(newSVpv(tgt_str, 0));
-    free(tgt_str);
+    Safefree(tgt_str);
 
 uint16_t
 str_to_rrtype(src)
@@ -370,10 +398,13 @@ str_to_name(src)
     PREINIT:
     wdns_name_t  name;
     wdns_res     res;
+    const char  *rstr;
     PPCODE:
     res = wdns_str_to_name(src, &name);
-    if (res != wdns_res_success)
-        croak("problem converting str to name (err %d)", (int)res);
+    if (res != wdns_res_success) {
+        rstr = wdns_res_to_str(res);
+        croak("problem converting str to name (err %d: %s)", (int)res, rstr);
+    }
     mXPUSHs(newSVpvn(name.data, name.len));
 
 void
@@ -384,7 +415,7 @@ message_to_str(m)
     PPCODE:
     str = wdns_message_to_str(m);
     mXPUSHs(newSVpv(str, 0));
-    free(str);
+    Safefree(str);
 
 void
 wdns_clear_message(m)
@@ -398,11 +429,14 @@ parse_message_raw(pkt)
     STRLEN          len;
     wdns_message_t  m;
     wdns_res        res;
+    const char     *rstr;
     CODE:
     p = SvPV(pkt, len);
     res = wdns_parse_message(&m, p, len);
-    if (res != wdns_res_success)
-        croak("problem parsing pkt (err %d)", (int)res);
+    if (res != wdns_res_success) {
+        rstr = wdns_res_to_str(res);
+        croak("problem parsing pkt (err %d: %s)", (int)res, rstr);
+    }
     RETVAL = &m;
     OUTPUT:
     RETVAL
